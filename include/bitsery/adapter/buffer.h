@@ -73,6 +73,20 @@ public:
   InputBufferAdapter(InputBufferAdapter&&) = default;
   InputBufferAdapter& operator=(InputBufferAdapter&&) = default;
 
+  void readBufferNoCopy(uint8_t *&buf, size_t sz) {
+    const size_t newOffset = _currOffset + sz;
+    if (newOffset <= _endReadOffset) {
+      auto *cuc = &*(_beginIt + static_cast<diff_t>(_currOffset));
+      b = static_cast<uint8_t *>(cuc);
+      _currOffset = newOffset;
+    } else {
+      std::memset(b, 0, sz);
+      if (_overflowOnReadEndPos) {
+        error(ReaderError::DataOverflow);
+      }
+    }
+  }
+
   void currentReadPos(size_t pos)
   {
     currentReadPosChecked(
