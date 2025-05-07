@@ -77,7 +77,7 @@ public:
     const size_t newOffset = _currOffset + sz;
     if (newOffset <= _endReadOffset) {
       auto *cuc = &*(_beginIt + static_cast<diff_t>(_currOffset));
-      buf = static_cast<uint8_t *>(cuc);
+      buf = (uint8_t *)cuc;
       _currOffset = newOffset;
     } else {
       std::memset(buf, 0, sz);
